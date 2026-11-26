@@ -1,0 +1,19 @@
+[Unit]
+Description=Personal finance dashboard (sandbox)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=finance
+WorkingDirectory=/opt/finance-dashboard
+EnvironmentFile=/etc/finance-dashboard/env
+ExecStart=/opt/finance-dashboard/.venv/bin/python client.py
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=strict
+
+[Install]
+WantedBy=multi-user.target

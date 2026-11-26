@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AWS Finance Dashboard Workshop: Interactive Guide</title>
+<style>
+  :root { --ink:#122636; --muted:#5b6b78; --line:#d5dfe5; --bg:#edf2f5; --card:#fff; --accent:#16786d; --warn:#9a5b00; --warnbg:#fff6e5; --ok:#0f6b3a; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; color:var(--ink); background:var(--bg); }
+  header { background:var(--ink); color:#fff; padding:1.25rem 1.25rem 1rem; position:sticky; top:0; z-index:5; }
+  header h1 { margin:0 0 .5rem; font-size:1.25rem; }
+  .bar { height:.6rem; background:#2c4658; border-radius:.3rem; overflow:hidden; }
+  .bar > span { display:block; height:100%; width:0; background:#6fd3c3; transition:width .3s; }
+  .meta { display:flex; flex-wrap:wrap; gap:.75rem; align-items:center; margin-top:.5rem; font-size:.9rem; color:#c9d6de; }
+  main { max-width:52rem; margin:0 auto; padding:1.25rem; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:.75rem; padding:1.1rem 1.25rem; margin:0 0 1rem; }
+  .notice { background:var(--warnbg); border:1px solid #f0d28a; color:var(--warn); border-radius:.6rem; padding:.75rem 1rem; margin:0 0 1rem; }
+  h2 { font-size:1.2rem; margin:0 0 .25rem; }
+  .step-head { display:flex; justify-content:space-between; gap:1rem; align-items:flex-start; cursor:pointer; }
+  .pill { font-size:.8rem; background:#e6eff0; color:var(--accent); border-radius:999px; padding:.15rem .6rem; white-space:nowrap; }
+  .done-badge { color:var(--ok); font-weight:600; font-size:.85rem; }
+  .goal { color:var(--muted); margin:.25rem 0 .75rem; }
+  ol.items, ul.items { padding-left:0; list-style:none; margin:0; }
+  ul.items li { display:flex; gap:.6rem; align-items:flex-start; padding:.45rem 0; border-top:1px solid #eef3f6; }
+  ul.items li:first-child { border-top:none; }
+  ul.items input[type=checkbox] { margin-top:.3rem; width:1.1rem; height:1.1rem; flex:0 0 auto; accent-color:var(--accent); }
+  .sub { color:var(--muted); font-size:.92rem; margin-top:.2rem; }
+  pre { background:#0f1d27; color:#e7f3f0; padding:.7rem .9rem; border-radius:.5rem; overflow-x:auto; font-size:.9rem; margin:.4rem 0; position:relative; }
+  code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size:.92em; }
+  p code, li code, td code { background:#eef3f6; padding:.05rem .3rem; border-radius:.25rem; }
+  .copy { position:absolute; top:.4rem; right:.4rem; font-size:.75rem; background:#2c4658; color:#fff; border:none; border-radius:.3rem; padding:.2rem .5rem; cursor:pointer; }
+  .done { border-left:4px solid var(--ok); padding-left:.8rem; }
+  .fail { margin-top:.5rem; font-size:.92rem; }
+  .fail summary { cursor:pointer; color:var(--warn); font-weight:600; }
+  .fail ul { margin:.4rem 0 0 1.1rem; }
+  .donewhen { margin-top:.75rem; padding:.6rem .8rem; background:#eaf6f2; border-radius:.5rem; font-size:.95rem; }
+  .toolbar { display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; margin-bottom:1rem; }
+  input[type=text] { font:inherit; padding:.45rem .6rem; border:1px solid #b7c6cf; border-radius:.4rem; min-width:14rem; }
+  button.btn { font:inherit; padding:.45rem .9rem; border-radius:.4rem; border:1px solid var(--accent); background:var(--accent); color:#fff; cursor:pointer; }
+  button.btn.alt { background:#fff; color:var(--accent); }
+  table { width:100%; border-collapse:collapse; font-size:.95rem; }
+  th, td { text-align:left; padding:.5rem .6rem; border-top:1px solid #eef3f6; vertical-align:top; }
+  th { background:#f5f8fa; }
+  a { color:var(--accent); }
+  .hidden { display:none; }
+  nav.jump { display:flex; flex-wrap:wrap; gap:.4rem; margin:0 0 1rem; }
+  nav.jump a { font-size:.85rem; background:#fff; border:1px solid var(--line); border-radius:999px; padding:.2rem .7rem; text-decoration:none; color:var(--ink); }
+  nav.jump a.complete { border-color:var(--ok); color:var(--ok); }
+  .diagram { font-family: ui-monospace, Menlo, Consolas, monospace; font-size:.85rem; background:#fff; border:1px solid var(--line); border-radius:.6rem; padding:.8rem; overflow-x:auto; white-space:pre; }
+</style>
+</head>
+<body>
+<header>
+  <h1>AWS Finance Dashboard Workshop</h1>
+  <div class="bar" aria-label="Overall progress"><span id="overall"></span></div>
+  <div class="meta">
+    <span id="summary">0 of 0 steps done</span>
+    <span>Use only sandbox data. Do not connect a real bank account.</span>
+  </div>
+</header>
+
+<main>
+  <section class="card">
+    <div class="toolbar">
+      <label>Your participant name&nbsp;
+        <input type="text" id="name" placeholder="e.g. alice" pattern="[a-z0-9][a-z0-9-]{0,39}" autocomplete="off">
+      </label>
+      <button class="btn alt" id="reset" type="button">Reset progress</button>
+    </div>
+    <p class="sub">Your name fills in the commands below. Use lowercase letters, digits, and hyphens only. Progress is saved in this browser only.</p>
+    <nav class="jump" id="jump"></nav>
+  </section>
+
+  <div id="app"></div>
+
+  <section class="card">
+    <h2>Troubleshooting</h2>
+    <table>
+      <thead><tr><th>What you see</th><th>What it means</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td>Bootstrap stops with a Parameter Store error</td><td>The role cannot read a secret</td><td>Check Step 3 (instance profile), then ask the instructor</td></tr>
+        <tr><td>Usage message from bootstrap</td><td>Your name has capital letters, spaces, or other symbols</td><td>Use lowercase letters, digits, and hyphens only</td></tr>
+        <tr><td>Missing /etc/finance-dashboard/sync.env</td><td>The setup script did not finish</td><td>Run Step 4c again</td></tr>
+        <tr><td>AccessDenied during sync</td><td>The role is missing a permission</td><td>Ask the instructor to update the policy</td></tr>
+        <tr><td>The chart area says "No transactions yet."</td><td>The dashboard read no rows</td><td>Check that transactions.csv exists (Step 5), then reload</td></tr>
+        <tr><td>curl shows "Failed to connect"</td><td>The service is not running</td><td>Run <code>sudo systemctl status finance-dashboard --no-pager</code> and ask the instructor</td></tr>
+        <tr><td>Browser cannot open the dashboard</td><td>Security group or IP</td><td>Check the port 8000 rule uses My IP; if your network changed, choose My IP again</td></tr>
+        <tr><td>Session Manager will not connect</td><td>The role is missing the SSM policy</td><td>Wait a minute and retry, then ask the instructor</td></tr>
+      </tbody>
+    </table>
+    <p class="sub">To see service errors: <code>sudo journalctl -u finance-dashboard -n 50 --no-pager</code></p>
+  </section>
+
+  <section class="card">
+    <h2>Optional: Terraform (CLI) version</h2>
+    <p>Builds the security group and instance from code. Follows the setup steps of the <a href="https://developer.hashicorp.com/terraform/tutorials/aws-get-started" target="_blank" rel="noopener">HashiCorp AWS get-started tutorial</a>.</p>
+    <div class="notice">Terraform creates resources. Use it in a fresh account, or ask the instructor first. Running it in the shared workshop account would try to create duplicates. The four Plaid values must already be in Parameter Store (SecureString).</div>
+    <ul class="sub">
+      <li>Install Terraform 1.2 or newer and the AWS CLI. Check with <code>terraform -version</code> and <code>aws --version</code>.</li>
+      <li>Authenticate with the access key from your instructor. Prefer a role or SSO sign-in if your instructor provides one.</li>
+      <li>In the <code>terraform</code> folder, copy <code>terraform.tfvars.example</code> to <code>terraform.tfvars</code>. Set <code>bucket_name</code>, <code>participant_name</code>, and <code>my_ip_cidr</code> (your IP with /32).</li>
+      <li>Run <code>terraform init</code>, <code>terraform validate</code> (expects "Success! The configuration is valid."), then <code>terraform apply</code> and type <code>yes</code>.</li>
+      <li>Run the Step 4 to Step 6 deploy and check using the new instance. Clean up with <code>terraform destroy</code>. The bucket must be empty first.</li>
+    </ul>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var STORAGE_KEY = "aws-finance-workshop-progress-v1";
+  var NAME_KEY = "aws-finance-workshop-name-v1";
+
+  // Each step: a goal, a checklist, the "done when" check, and optional fixes.
+  // {name} is replaced by the participant name, or a placeholder if none is set.
+  var ACCESS = {
+    id: "access",
+    title: "Access the AWS web console",
+    time: "5 min",
+    goal: "Sign in as your IAM user and confirm you can reach the services the workshop uses.",
+    items: [
+      { text: "Open the sign-in URL from your instructor. It looks like https://<12-digit-account-id>.signin.aws.amazon.com/console. If you only have the account ID, go to console.aws.amazon.com and choose IAM user." },
+      { text: "Type your IAM user name, click Next, type the password, and click Sign in." },
+      { text: "If AWS asks you to change the password, choose a new one and write it down. If it asks for an MFA code, type the six digits from your authenticator app." },
+      { text: "Click the region name in the top-right corner and choose the workshop region (for example US East (N. Virginia), us-east-1). Every step uses that region." },
+      { text: "Use the search bar at the top to find EC2, S3, Systems Manager, and IAM." }
+    ],
+    doneWhen: "You can open EC2 → Instances, S3 → Buckets, Systems Manager → Parameter Store, and IAM → Roles in the workshop region without an error.",
+    fails: [
+      "Sign-in fails: check the account ID and user name for typos. Ask the instructor to reset the password if you are locked out.",
+      "\"You are not authorized to perform ...\": copy the full message and send it to your instructor, who adds the missing permission."
+    ]
+  };
+
+  var STEPS = [
+    {
+      id: "step1",
+      title: "Check the shared setup",
+      time: "5 min",
+      goal: "Confirm the bucket, the secrets, and the role exist. You only look. Change nothing.",
+      items: [
+        { text: "S3: open the workshop bucket, then the Permissions tab. Block all public access should be On." },
+        { text: "Systems Manager → Parameter Store: four names exist: /finance-dashboard/bucket_name, /finance-dashboard/plaid/client_id, /finance-dashboard/plaid/secret, /finance-dashboard/plaid/access_token. You do not need to open the values." },
+        { text: "IAM → Roles: search for finance-dashboard. You should see finance-dashboard-readonly." }
+      ],
+      doneWhen: "You see the bucket, all four parameters, and the role.",
+      fails: [ "Something is missing: stop and ask the instructor. Do not create it yourself, because it must match the other workshop resources." ]
+    },
+    {
+      id: "step2",
+      title: "Create a security group",
+      time: "5 min",
+      goal: "Open port 8000 for your own IP address only.",
+      items: [
+        { text: "EC2 → Network & Security → Security Groups → Create security group." },
+        { text: "Security group name: finance-dashboard-{name}. Description: Dashboard on port 8000 from my IP. VPC: keep the default." },
+        { text: "Inbound rules → Add rule: Type Custom TCP, Port range 8000, Source type My IP." },
+        { text: "Leave outbound rules as they are. Click Create security group." }
+      ],
+      warn: "Do not set the source to 0.0.0.0/0. That opens the dashboard to the whole internet.",
+      doneWhen: "The group is listed with an inbound rule for port 8000 from My IP.",
+      fails: []
+    },
+    {
+      id: "step3",
+      title: "Launch the EC2 instance",
+      time: "10 min",
+      goal: "Start the computer that runs the sync and the dashboard.",
+      items: [
+        { text: "EC2 → Instances → Launch instances." },
+        { text: "Name: finance-dashboard-{name}. Application and OS Images: Amazon Linux 2023." },
+        { text: "Instance type: t3.micro (t2.micro also works on the older free tier)." },
+        { text: "Key pair (login): Proceed without a key pair. You will use Session Manager." },
+        { text: "Network settings → Edit: choose the security group from Step 2, and make sure Auto-assign public IP is Enable." },
+        { text: "Advanced details → IAM instance profile: finance-dashboard-readonly." },
+        { text: "Launch instance, then View all instances. Wait for Instance state Running and status checks 2/2 checks passed (about two minutes)." }
+      ],
+      doneWhen: "The instance shows Running and 2/2 checks passed.",
+      fails: []
+    },
+    {
+      id: "step4",
+      title: "Open the terminal and deploy",
+      time: "10 min",
+      goal: "Install the app on the instance and start the dashboard service.",
+      items: [
+        { text: "Select your instance → Connect → Session Manager tab → Connect. A black terminal opens in the browser. Type every command there." },
+        { text: "Download the code. Press Enter after each line:", code: "sudo dnf install -y git\ngit clone https://github.com/MUNQuantSociety/AWS-Builder-Sessions.git finance-dashboard\ncd finance-dashboard" , sub: "If it asks Is this ok [y/N], type y." },
+        { text: "Run the setup script (this takes two to three minutes and prints a lot of text):", code: "sudo bash deploy/bootstrap.sh {name}" },
+        { text: "The last lines should say:", code: "Bootstrap done. Dashboard service is running on port 8000.\nNext: sudo bash deploy/sync-now.sh   (runs one Plaid sync into S3)" }
+      ],
+      doneWhen: "The script ends with Bootstrap done.",
+      fails: [
+        "Parameter Store error: the role cannot read a secret. Check Step 3 and ask the instructor.",
+        "dnf or pip error: the instance cannot reach the internet. Check that it has a public IP.",
+        "Usage message: your name has capital letters or spaces. Use lowercase letters, digits, and hyphens."
+      ]
+    },
+    {
+      id: "step5",
+      title: "Run the sync",
+      time: "5 min",
+      goal: "The instance fetches Plaid sandbox data and saves a CSV to your S3 folder.",
+      items: [
+        { text: "In the same terminal, run:", code: "sudo bash deploy/sync-now.sh" },
+        { text: "Wait for the last line. Expected output:", code: "INFO Stored N transactions from M pages\nSync finished. Check: curl -s http://127.0.0.1:8000/api/status", sub: "N is the number of transactions saved; M is the number of Plaid pages. Both can change from run to run." },
+        { text: "S3 → the workshop bucket → participants → {name} → processed. You should see transactions.csv. It has no date in its name because each sync replaces it. Click the file and read Last modified." }
+      ],
+      doneWhen: "transactions.csv is in your processed folder.",
+      fails: [
+        "Missing /etc/finance-dashboard/sync.env: Step 4 did not finish. Run the setup script again.",
+        "AccessDenied: the role is missing a permission. Ask the instructor to update the policy."
+      ]
+    },
+    {
+      id: "step6",
+      title: "Verify the dashboard",
+      time: "10 min",
+      goal: "Check the status from the instance, then open the dashboard in your browser.",
+      items: [
+        { text: "In the terminal, run:", code: "curl -s http://127.0.0.1:8000/api/status", sub: "Expected: JSON that includes \"state\": \"ok\", the UTC last_run_utc time, and the row count." },
+        { text: "EC2 → Instances → select your instance → copy the Public IPv4 address." },
+        { text: "Open a new browser tab and go to http://<public-ip>:8000. Use http://, not https://." },
+        { text: "Check the Month selector, the three cards (Income, Spending, Savings), and the charts. The line under the title should say Last sync … (state: ok)." , sub: "The dashboard keeps data for 60 seconds. If it shows old data after a new sync, wait a minute and reload." }
+      ],
+      doneWhen: "The dashboard shows your data in the browser.",
+      fails: [ "Page does not load: check the port 8000 rule uses your current IP. If your network changed, edit the rule and choose My IP again." ]
+    },
+    {
+      id: "step7",
+      title: "Clean up",
+      time: "5 min",
+      goal: "Stop the instance so it does not keep costing money.",
+      items: [
+        { text: "EC2 → Instances: tick your instance → Instance state → Terminate instance → confirm." },
+        { text: "Wait until it shows Terminated. This can take a few minutes; AWS will not delete a security group an instance still uses." },
+        { text: "EC2 → Security Groups: tick finance-dashboard-{name} → Actions → Delete security group." }
+      ],
+      warn: "Do not delete the bucket, the parameters, or the shared role. The instructor manages those.",
+      doneWhen: "The instance is terminated and your security group is deleted.",
+      fails: []
+    }
+  ];
+
+  function loadJSON(key, fallback) {
+    try {
+      var raw = window.localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (err) {
+      return fallback;
+    }
+  }
+  function saveJSON(key, value) {
+    try { window.localStorage.setItem(key, JSON.stringify(value)); } catch (err) { /* storage unavailable: progress lasts this page only */ }
+  }
+
+  var progress = loadJSON(STORAGE_KEY, {});
+  var nameInput = document.getElementById("name");
+  var app = document.getElementById("app");
+  var jump = document.getElementById("jump");
+
+  function currentName() {
+    var value = (nameInput.value || "").trim().toLowerCase();
+    return /^[a-z0-9][a-z0-9-]{0,39}$/.test(value) ? value : "<your-name>";
+  }
+
+  function fill(text) {
+    return String(text).split("{name}").join(currentName());
+  }
+
+  function el(tag, attrs, children) {
+    var node = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (key) {
+        if (key === "text") node.textContent = attrs[key];
+        else if (key === "html") node.innerHTML = attrs[key];
+        else node.setAttribute(key, attrs[key]);
+      });
+    }
+    (children || []).forEach(function (child) { if (child) node.appendChild(child); });
+    return node;
+  }
+
+  function codeBlock(text) {
+    var filled = fill(text);
+    var copy = el("button", { class: "copy", type: "button", text: "Copy" });
+    copy.addEventListener("click", function () {
+      var done = function () { copy.textContent = "Copied"; setTimeout(function () { copy.textContent = "Copy"; }, 1200); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(filled).then(done, done);
+      } else {
+        done();
+      }
+    });
+    return el("pre", null, [copy, el("code", { text: filled })]);
+  }
+
+  function stepKeys(step) {
+    return step.items.map(function (_, index) { return step.id + "." + index; });
+  }
+
+  function stepComplete(step) {
+    return stepKeys(step).every(function (key) { return progress[key]; });
+  }
+
+  function render() {
+    app.innerHTML = "";
+    jump.innerHTML = "";
+
+    var all = [ACCESS].concat(STEPS);
+    var total = all.length;
+    var doneCount = all.filter(stepComplete).length;
+
+    document.getElementById("overall").style.width = Math.round((doneCount / total) * 100) + "%";
+    document.getElementById("summary").textContent = doneCount + " of " + total + " sections done";
+
+    all.forEach(function (step) {
+      var link = el("a", { href: "#" + step.id, text: step.title });
+      if (stepComplete(step)) link.className = "complete";
+      jump.appendChild(link);
+    });
+
+    all.forEach(function (step) {
+      var done = stepComplete(step);
+      var keys = stepKeys(step);
+      var doneInStep = keys.filter(function (k) { return progress[k]; }).length;
+
+      var head = el("div", { class: "step-head" }, [
+        el("div", null, [
+          el("h2", { text: step.title }),
+          el("div", { class: "sub", text: step.time + " · " + doneInStep + " of " + step.items.length + " checked" })
+        ]),
+        el("span", { class: "pill", text: done ? "Done" : "In progress" })
+      ]);
+
+      var list = el("ul", { class: "items" });
+      step.items.forEach(function (item, index) {
+        var key = step.id + "." + index;
+        var checkbox = el("input", { type: "checkbox", id: key });
+        checkbox.checked = !!progress[key];
+        checkbox.addEventListener("change", function () {
+          progress[key] = checkbox.checked;
+          saveJSON(STORAGE_KEY, progress);
+          render();
+        });
+        var content = [el("label", { for: key, text: fill(item.text) })];
+        if (item.sub) content.push(el("div", { class: "sub", text: fill(item.sub) }));
+        if (item.code) content.push(codeBlock(item.code));
+        list.appendChild(el("li", null, [checkbox, el("div", null, content)]));
+      });
+
+      var sectionChildren = [head];
+      if (step.goal) sectionChildren.push(el("p", { class: "goal", text: fill(step.goal) }));
+      if (step.warn) sectionChildren.push(el("div", { class: "notice", text: step.warn }));
+      sectionChildren.push(list);
+      sectionChildren.push(el("div", { class: "donewhen" }, [
+        el("strong", { text: "Done when: " }),
+        el("span", { text: fill(step.doneWhen) })
+      ]));
+      if (step.fails && step.fails.length) {
+        var fails = el("ul", null, step.fails.map(function (f) { return el("li", { text: fill(f) }); }));
+        sectionChildren.push(el("details", { class: "fail" }, [el("summary", { text: "If it fails" }), fails]));
+      }
+
+      app.appendChild(el("section", {
+        class: "card" + (done ? " done" : ""),
+        id: step.id
+      }, sectionChildren));
+    });
+  }
+
+  nameInput.value = loadJSON(NAME_KEY, "");
+  nameInput.addEventListener("input", function () {
+    saveJSON(NAME_KEY, nameInput.value);
+    render();
+  });
+
+  document.getElementById("reset").addEventListener("click", function () {
+    if (!window.confirm("Clear all checkboxes in this browser?")) return;
+    progress = {};
+    saveJSON(STORAGE_KEY, progress);
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

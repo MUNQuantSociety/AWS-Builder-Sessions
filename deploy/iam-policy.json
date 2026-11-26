@@ -1,0 +1,40 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ListParticipantPrefixesOnly",
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::BUCKET_NAME",
+      "Condition": {
+        "StringLike": {"s3:prefix": ["participants/*"]}
+      }
+    },
+    {
+      "Sid": "ReadWriteParticipantObjectsOnly",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:PutObject"],
+      "Resource": "arn:aws:s3:::BUCKET_NAME/participants/*"
+    },
+    {
+      "Sid": "ReadWorkshopParameters",
+      "Effect": "Allow",
+      "Action": "ssm:GetParameter",
+      "Resource": [
+        "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/finance-dashboard/bucket_name",
+        "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/finance-dashboard/plaid/client_id",
+        "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/finance-dashboard/plaid/secret",
+        "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/finance-dashboard/plaid/access_token"
+      ]
+    },
+    {
+      "Sid": "DecryptSecureStringsViaSsmOnly",
+      "Effect": "Allow",
+      "Action": "kms:Decrypt",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {"kms:ViaService": "ssm.REGION.amazonaws.com"}
+      }
+    }
+  ]
+}

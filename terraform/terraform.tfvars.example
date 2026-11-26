@@ -1,0 +1,6 @@
+# Copy to terraform.tfvars and fill in your values. Do not commit terraform.tfvars.
+region           = "us-east-1"
+bucket_name      = "finance-dashboard-workshop-alice-123"
+participant_name = "alice"
+my_ip_cidr       = "203.0.113.10/32"
+instance_type    = "t3.micro"

@@ -1,0 +1,44 @@
+[
+  {
+    "added": [
+      {"transaction_id": "txn_001", "date": "2026-09-01", "name": "Acme Payroll", "amount": -2500.00, "pending": false, "personal_finance_category": {"primary": "INCOME"}},
+      {"transaction_id": "txn_002", "date": "2026-09-02", "name": "Landlord LLC", "amount": 1200.00, "pending": false, "personal_finance_category": {"primary": "RENT_AND_UTILITIES"}},
+      {"transaction_id": "txn_003", "date": "2026-09-05", "name": "Grocery Mart", "amount": 86.40, "pending": false, "personal_finance_category": {"primary": "FOOD_AND_DRINK"}},
+      {"transaction_id": "txn_004", "date": "2026-09-09", "name": "Metro Transit", "amount": 45.00, "pending": false, "personal_finance_category": {"primary": "TRANSPORTATION"}},
+      {"transaction_id": "txn_005", "date": "2026-09-15", "name": "Acme Payroll", "amount": -2500.00, "pending": false, "personal_finance_category": {"primary": "INCOME"}},
+      {"transaction_id": "txn_006", "date": "2026-09-18", "name": "Streaming Co", "amount": 15.99, "pending": false, "personal_finance_category": {"primary": "ENTERTAINMENT"}},
+      {"transaction_id": "txn_007", "date": "2026-09-20", "name": "Transfer to Savings", "amount": 500.00, "pending": false, "personal_finance_category": {"primary": "TRANSFER_OUT"}},
+      {"transaction_id": "txn_008", "date": "2026-09-22", "name": "Transfer from Checking", "amount": -500.00, "pending": false, "personal_finance_category": {"primary": "TRANSFER_IN"}},
+      {"transaction_id": "txn_009", "date": "2026-10-01", "name": "Acme Payroll", "amount": -2500.00, "pending": false, "personal_finance_category": {"primary": "INCOME"}},
+      {"transaction_id": "txn_010", "date": "2026-10-02", "name": "Landlord LLC", "amount": 1200.00, "pending": false, "personal_finance_category": {"primary": "RENT_AND_UTILITIES"}},
+      {"transaction_id": "txn_011", "date": "2026-10-04", "name": "Grocery Mart", "amount": 102.15, "pending": false, "personal_finance_category": {"primary": "FOOD_AND_DRINK"}},
+      {"transaction_id": "txn_012", "date": "2026-10-08", "name": "Coffee Corner", "amount": 6.75, "pending": false, "personal_finance_category": {"primary": "FOOD_AND_DRINK"}},
+      {"transaction_id": "txn_013", "date": "2026-10-12", "name": "Power and Light", "amount": 96.30, "pending": false, "personal_finance_category": {"primary": "RENT_AND_UTILITIES"}}
+    ],
+    "modified": [],
+    "removed": [],
+    "next_cursor": "cursor-page-1",
+    "has_more": true
+  },
+  {
+    "added": [
+      {"transaction_id": "txn_014", "date": "2026-10-15", "name": "Acme Payroll", "amount": -2500.00, "pending": false, "personal_finance_category": {"primary": "INCOME"}},
+      {"transaction_id": "txn_015", "date": "2026-10-19", "name": "City Cinema", "amount": 38.00, "pending": false, "personal_finance_category": {"primary": "ENTERTAINMENT"}},
+      {"transaction_id": "txn_016", "date": "2026-10-24", "name": "Pharmacy One", "amount": 24.10, "pending": false, "personal_finance_category": {"primary": "MEDICAL"}},
+      {"transaction_id": "txn_017", "date": "2026-11-01", "name": "Acme Payroll", "amount": -2500.00, "pending": false, "personal_finance_category": {"primary": "INCOME"}},
+      {"transaction_id": "txn_018", "date": "2026-11-02", "name": "Landlord LLC", "amount": 1200.00, "pending": false, "personal_finance_category": {"primary": "RENT_AND_UTILITIES"}},
+      {"transaction_id": "txn_019", "date": "2026-11-05", "name": "Grocery Mart", "amount": 94.80, "pending": false, "personal_finance_category": {"primary": "FOOD_AND_DRINK"}},
+      {"transaction_id": "txn_020", "date": "2026-11-09", "name": "Metro Transit", "amount": 45.00, "pending": false, "personal_finance_category": {"primary": "TRANSPORTATION"}},
+      {"transaction_id": "txn_021", "date": "2026-11-12", "name": "Freelance Client", "amount": -640.00, "pending": false, "personal_finance_category": {"primary": "INCOME"}},
+      {"transaction_id": "txn_022", "date": "2026-11-14", "name": "Gas Station", "amount": 52.30, "pending": true, "personal_finance_category": {"primary": "TRANSPORTATION"}}
+    ],
+    "modified": [
+      {"transaction_id": "txn_013", "date": "2026-10-12", "name": "Power and Light", "amount": 98.10, "pending": false, "personal_finance_category": {"primary": "RENT_AND_UTILITIES"}}
+    ],
+    "removed": [
+      {"transaction_id": "txn_012"}
+    ],
+    "next_cursor": "cursor-page-2",
+    "has_more": false
+  }
+]

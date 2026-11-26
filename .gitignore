@@ -1,0 +1,24 @@
+# Secrets: never commit console credentials or private keys
+credentials/
+keys/
+*.pem
+*.key
+.env
+.env.*
+!.env.example
+
+# OS noise
+.DS_Store
+Thumbs.db
+# Local data and secrets. Never commit these.
+local_store/
+*.env
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.venv/
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+terraform/terraform.tfvars
