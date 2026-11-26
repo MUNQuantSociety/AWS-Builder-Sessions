@@ -99,8 +99,18 @@
     <div class="notice">Terraform creates resources. Use it in a fresh account, or ask the instructor first. Running it in the shared workshop account would try to create duplicates. The four Plaid values must already be in Parameter Store (SecureString).</div>
     <ul class="sub">
       <li>Install Terraform 1.2 or newer and the AWS CLI. Check with <code>terraform -version</code> and <code>aws --version</code>.</li>
-      <li>Authenticate with the access key from your instructor. Prefer a role or SSO sign-in if your instructor provides one.</li>
-      <li>In the <code>terraform</code> folder, copy <code>terraform.tfvars.example</code> to <code>terraform.tfvars</code>. Set <code>bucket_name</code>, <code>participant_name</code>, and <code>my_ip_cidr</code> (your IP with /32).</li>
+      <li>Authenticate with the access key from your instructor. Prefer a role or SSO sign-in if your instructor provides one. Set the two variables in the same terminal you will run Terraform in:
+        <div class="sub"><strong>macOS or Linux:</strong></div>
+        <pre><code>export AWS_ACCESS_KEY_ID=&lt;your-access-key-id&gt;
+export AWS_SECRET_ACCESS_KEY=&lt;your-secret-access-key&gt;</code></pre>
+        <div class="sub"><strong>Windows (PowerShell):</strong></div>
+        <pre><code>$env:AWS_ACCESS_KEY_ID="&lt;your-access-key-id&gt;"
+$env:AWS_SECRET_ACCESS_KEY="&lt;your-secret-access-key&gt;"</code></pre>
+      </li>
+      <li>In the <code>terraform</code> folder, create <code>terraform.tfvars</code> from the example file. Set <code>bucket_name</code>, <code>participant_name</code>, and <code>my_ip_cidr</code> (your IP with /32).
+        <div class="sub"><strong>macOS or Linux:</strong> <code>cp terraform.tfvars.example terraform.tfvars</code></div>
+        <div class="sub"><strong>Windows (PowerShell):</strong> <code>Copy-Item terraform.tfvars.example terraform.tfvars</code></div>
+      </li>
       <li>Run <code>terraform init</code>, <code>terraform validate</code> (expects "Success! The configuration is valid."), then <code>terraform apply</code> and type <code>yes</code>.</li>
       <li>Run the Step 4 to Step 6 deploy and check using the new instance. Clean up with <code>terraform destroy</code>. The bucket must be empty first.</li>
     </ul>
@@ -186,7 +196,7 @@
       id: "step4",
       title: "Open the terminal and deploy",
       time: "10 min",
-      goal: "Install the app on the instance and start the dashboard service.",
+      goal: "Install the app on the instance and start the dashboard service. The terminal runs Linux (Amazon Linux 2023), so these commands are the same on Windows and macOS. Type them in the browser terminal, not on your own computer.",
       items: [
         { text: "Select your instance → Connect → Session Manager tab → Connect. A black terminal opens in the browser. Type every command there." },
         { text: "Download the code. Press Enter after each line:", code: "sudo dnf install -y git\ngit clone https://github.com/MUNQuantSociety/AWS-Builder-Sessions.git finance-dashboard\ncd finance-dashboard" , sub: "If it asks Is this ok [y/N], type y." },
