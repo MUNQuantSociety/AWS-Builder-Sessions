@@ -275,6 +275,22 @@ def test_root_page_honours_the_month_parameter(loaded_data: DashboardData) -> No
     assert "$3,652.61" in response.body
 
 
+def test_root_page_puts_the_minus_sign_before_the_dollar_sign() -> None:
+    overspent_csv = (
+        "transaction_id,date,name,amount,category,pending\n"
+        "a,2026-11-01,Refund,-500.00,TRAVEL,false\n"
+        "b,2026-11-02,Loan,4299.46,LOAN_PAYMENTS,false\n"
+    )
+    data = DashboardData(
+        FakeStore({PROCESSED_KEY: overspent_csv}), cache_seconds=60, clock=lambda: 0.0
+    )
+
+    response = route("/", {}, data)
+
+    assert "-$3,799.46" in response.body
+    assert "$-" not in response.body
+
+
 def test_root_page_shows_last_sync_status(loaded_data: DashboardData) -> None:
     response = route("/", {}, loaded_data)
 

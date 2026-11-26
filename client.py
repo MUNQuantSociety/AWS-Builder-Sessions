@@ -344,7 +344,7 @@ def _category_label(category: str) -> str:
 
 
 def _format_money(value: Decimal) -> str:
-    """Format money as $1,234.50.
+    """Format money as $1,234.50, or -$1,234.50 when negative.
 
     Args:
         value: Amount to format.
@@ -352,7 +352,8 @@ def _format_money(value: Decimal) -> str:
     Returns:
         The formatted string.
     """
-    return f"${value:,.2f}"
+    sign = "-" if value < 0 else ""
+    return f"{sign}${abs(value):,.2f}"
 
 
 # --- Data and routing ----------------------------------------------------------
@@ -541,7 +542,8 @@ def _cards(selected: MonthSummary | None) -> str:
     spending = selected.spending if selected else Decimal(0)
     savings = selected.savings if selected else Decimal(0)
     items = "".join(
-        f'<div class="card"><div>{label}</div><div class="value">${value:,.2f}</div></div>'
+        f'<div class="card"><div>{label}</div>'
+        f'<div class="value">{_format_money(value)}</div></div>'
         for label, value in (
             ("Income", income),
             ("Spending", spending),
