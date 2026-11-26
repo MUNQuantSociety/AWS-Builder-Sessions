@@ -28,7 +28,7 @@ You need:
 
 ### Accessing the AWS web console
 
-1. Open the sign-in URL from your instructor. It looks like `https://<12-digit-account-id>.signin.aws.amazon.com/console`. If you only have the account ID, go to https://console.aws.amazon.com and choose **IAM user**.
+1. Open the sign-in URL from your instructor. It looks like `https://855603407903.signin.aws.amazon.com/console`. If you only have the account ID, go to https://console.aws.amazon.com and choose **IAM user**.
 2. Type your **IAM user name**, click **Next**, type the **password**, and click **Sign in**.
 3. If AWS asks you to change the password, choose a new one and write it down. If it asks for an MFA code, type the six digits from your authenticator app.
 4. Click the region name in the top-right corner and choose the workshop region. Every step uses that same region. If a resource seems missing, the wrong region is the usual cause.

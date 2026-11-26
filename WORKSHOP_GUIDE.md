@@ -41,7 +41,7 @@ Your instructor gives you three things: a **sign-in URL**, an **IAM user name**,
 
 ### A1. Open the sign-in page
 
-1. Open the sign-in URL from your instructor. It looks like `https://<12-digit-account-id>.signin.aws.amazon.com/console`.
+1. Open the sign-in URL from your instructor. It looks like `https://855603407903.signin.aws.amazon.com/console`.
 2. If you were given only the account ID, go to https://console.aws.amazon.com, choose **IAM user**, and type the account ID or alias.
 
 ### A2. Sign in as the IAM user
